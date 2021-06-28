@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from environs import Env
 
 # Теперь используем вместо библиотеки python-dotenv библиотеку environs
@@ -9,3 +11,12 @@ ADMINS = env.list("ADMINS")  # Тут у нас будет список из а�
 IP = env.str("ip")  # Тоже str, но для айпи адреса хоста
 
 log_folder = 'data/log/'
+
+
+# Qiwi
+@dataclass
+class Qiwi:
+    token = env.str('qiwi')
+    wallet = env.str('wallet')
+    public_key = env.str('qiwi_p_pub')
+    themeCode = 'Tymofei-KHIlIeciDt'
