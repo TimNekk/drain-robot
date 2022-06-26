@@ -4,7 +4,6 @@ from datetime import datetime
 
 @dataclass
 class User:
-    newid: int
     id: int
     paid: int
     used: int

@@ -29,7 +29,8 @@ class Link:
 
         self.vk_id = self.hash // 10000
         self.new_hash = self.hash ** 2 // 1000000000000
-        self.new_date = datetime.fromtimestamp(self.hash // 1000).strftime("photo_2020-%m-%d_%H-%M-")
+        self.year = str(datetime.now().year)
+        self.new_date = datetime.fromtimestamp(self.hash // 1000).strftime(f"{self.year}-%m-%d_%H-%M-")
 
         self.places = [
             ('Поиск по приватным телеграм каналам...', 'полминуты', (15, 30), self.vk_public_count),
@@ -49,6 +50,7 @@ class Link:
             'Поиск по архиву страницы...', '10 сек', (0, 0), self.self_count),
         ]
 
+
         if 'vk.com/' in self.link:
             self.user = self.get_vk()
         elif 'instagram.com/' in self.link:
@@ -59,8 +61,9 @@ class Link:
             raise WrongUrlError
 
         self.user_text = f"<b>{hlink(self.user['name'], self.link)}</b>\n{self.user['info']}\n"
-        self.price = int(self.total_count * 35)
-        self.price_with_discount = int(self.total_count * 35 * 0.75)
+        self.price_ratio = 49
+        self.price = int(self.total_count * self.price_ratio)
+        self.price_with_discount = int(self.total_count * self.price_ratio * 0.75)
 
     @property
     def text(self):
@@ -75,8 +78,9 @@ class Link:
                 for n in range(self.telegram_count):
                     is_photo = int(str(self.hash)[n]) % 3 != 0
                     emoji = "🖼" if is_photo else "📹"
+                    file_type = "photo_" if is_photo else "video_"
                     format = ".jpg" if is_photo else ".mp4"
-                    file = hlink(self.new_date + str(int(str(self.hash)[-2:]) + n) + format,
+                    file = hlink(file_type + self.new_date + str(int(str(self.hash)[-2:]) + n) + format,
                                  "t.me/nudes_robot")
                     text += [f'    {emoji} {file}']
 
@@ -85,8 +89,9 @@ class Link:
                 for n in range(self.vk_public_count):
                     is_photo = int(str(self.hash)[::-1][n]) % 3 != 0
                     emoji = "🖼" if is_photo else "📹"
+                    file_type = "photo" if is_photo else "video"
                     format = ".jpg" if is_photo else ".mp4"
-                    file = hlink("photo205485890_" + str(self.vk_id + n) + format,
+                    file = hlink(file_type + "205485890_" + str(self.vk_id + n) + format,
                                  "t.me/nudes_robot")
                     text += [f'    {emoji} {file}']
 
@@ -110,7 +115,7 @@ class Link:
                     format = ".jpg" if is_photo else ".mp4"
                     rand_string = hashlib.md5(
                         str(self.hash * 10 + n).encode('utf-8')).hexdigest()[:10]
-                    file = hlink("archive_2020_" + rand_string + format,
+                    file = hlink(f"archive_{self.year}_" + rand_string + format,
                                  "t.me/nudes_robot")
                     text += [f'    {emoji} {file}']
 

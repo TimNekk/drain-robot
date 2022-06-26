@@ -1,17 +1,15 @@
 import logging
-from datetime import datetime, timedelta
 from random import randint
-
-import pymysql
+import sqlite3
 
 
 class Database:
+    def __init__(self, path_to_db='data/main.db'):
+        self.path_to_db = path_to_db
+
     @property
     def connection(self):
-        return pymysql.connect(host='dreampowerbot.ru',
-                               user='u1382171',
-                               password='ghob!TURK_psog6ror',
-                               database='u1382171_nudes_robot')
+        return sqlite3.connect(self.path_to_db)
 
     def execute(self, sql: str, parameters: tuple = tuple(), fetchone=False,
                 fetchall=False, commit=False):
@@ -24,7 +22,6 @@ class Database:
         data = None
         if commit:
             connection.commit()
-            data = cursor.lastrowid
         if fetchone:
             data = cursor.fetchone()
         if fetchall:

@@ -6,7 +6,6 @@ from aiogram.utils.markdown import hlink
 
 from keyboards.inline import paid_keyboard
 from loader import dp, db
-from utils.qiwi import Payment, NoPaymentFound, NotEnoughMoney
 
 
 @dp.callback_query_handler(text_contains='buy')
@@ -14,7 +13,7 @@ async def bot_buy(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=5)
     amount = int(call.data.split(':')[1])
 
-    payment = Payment(amount=amount)
+    payment = None
     payment.create()
 
     await call.message.answer(
